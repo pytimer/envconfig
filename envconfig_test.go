@@ -70,6 +70,8 @@ type Specification struct {
 	MapField     map[string]string `default:"one:two,three:four"`
 	UrlValue     CustomURL
 	UrlPointer   *CustomURL
+	UpCased      string
+	NoUpCased    string `upper:"false"`
 }
 
 type Embedded struct {
@@ -794,7 +796,7 @@ func TestCheckDisallowedIgnored(t *testing.T) {
 
 func TestErrorMessageForRequiredAltVar(t *testing.T) {
 	var s struct {
-		Foo    string `envconfig:"BAR" required:"true"`
+		Foo string `envconfig:"BAR" required:"true"`
 	}
 
 	os.Clearenv()
@@ -806,6 +808,29 @@ func TestErrorMessageForRequiredAltVar(t *testing.T) {
 
 	if !strings.Contains(err.Error(), " BAR ") {
 		t.Errorf("expected error message to contain BAR, got \"%v\"", err)
+	}
+}
+
+func TestUpperCase(t *testing.T) {
+	var s Specification
+	os.Clearenv()
+	/*
+		UpCased                      string
+		NoUpCased                    string `upper:"false"`
+	*/
+	os.Setenv("ENV_CONFIG_REQUIREDVAR", "required")
+	os.Setenv("ENV_CONFIG_UPCASED", "UpCased")
+	os.Setenv("env_config_noupcased", "NoUpCased")
+	if err := Process("env_config", &s); err != nil {
+		t.Error(err)
+	}
+
+	if s.UpCased != "UpCased" {
+		t.Errorf("expected %s, got %s", "UpCased", s.UpCased)
+	}
+
+	if s.NoUpCased != "NoUpCased" {
+		t.Errorf("expected %s, got %s", "NoUpCased", s.NoUpCased)
 	}
 }
 

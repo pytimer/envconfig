@@ -103,6 +103,7 @@ type Specification struct {
     RequiredVar     string `required:"true"`
     IgnoredVar      string `ignored:"true"`
     AutoSplitVar    string `split_words:"true"`
+    NoUpperCasedVar string `upper:"false"`
     RequiredAndAutoSplitVar    string `required:"true" split_words:"true"`
 }
 ```
@@ -118,6 +119,11 @@ Envconfig will process value for `ManualOverride1` by populating it with the
 value for `MYAPP_MANUAL_OVERRIDE_1`. Without this struct tag, it would have
 instead looked up `MYAPP_MANUALOVERRIDE1`. With the `split_words:"true"` tag
 it would have looked up `MYAPP_MANUAL_OVERRIDE1`.
+
+Envconfig will look for environment variables by making them lower-cased when
+the `upper:"false"` tag is supplied. Without this tag, `NoUpperCasedVar` above
+would look for an environment variable called `MYAPP_NOUPPERCASEDVAR`. With the
+setting applied it will instead looked up `myapp_nouppercasedvar`.
 
 ```Bash
 export MYAPP_MANUAL_OVERRIDE_1="this will be the value"
