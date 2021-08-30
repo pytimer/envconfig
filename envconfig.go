@@ -127,6 +127,7 @@ func gatherInfo(prefix string, spec interface{}) ([]varInfo, error) {
 		info.Key = strings.ToUpper(info.Key)
 		if len(ftype.Tag.Get("upper")) != 0 && !isTrue(ftype.Tag.Get("upper")) {
 			info.Key = strings.ToLower(info.Key)
+			info.Alt = strings.ToLower(info.Alt)
 		}
 		infos = append(infos, info)
 
